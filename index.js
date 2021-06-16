@@ -17,22 +17,48 @@ const page_not_found = fs.readFileSync(
   "utf-8"
 );
 
+// replace all card data
+const replaceAllCardData = function (cardHtml, itemObj) {
+  return cardHtml
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%PRODUCTNAME%}", itemObj.productName)
+    .replace("{%NOT_ORGANIC%}", itemObj.organic ? "" : "not-organic")
+    .replace("{%QUANTITY%}", itemObj.quantity)
+    .replace("{%PRICE%}", itemObj.price)
+    .replace("{%ID%}", itemObj.id);
+};
+// replace all product data
+const replaceAllProductData = (productHtml, itemObj) => {
+  return productHtml
+    .replace("{%PRODUCTNAME%}", itemObj.productName)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%NOT_ORGANIC%}", itemObj.organic ? "" : "not-organic")
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%IMAGE%}", itemObj.image)
+    .replace("{%PRODUCTNAME%}", itemObj.productName)
+    .replace("{%FROM%}", itemObj.from)
+    .replace("{%NUTRIENTS%}", itemObj.nutrients)
+    .replace("{%QUANTITY%}", itemObj.quantity)
+    .replace("{%PRICE%}", itemObj.price)
+    .replace("{%PRICE%}", itemObj.price)
+    .replace("{%DESCRIPTION%}", itemObj.description);
+};
+
 // final data
 
 const productList = dataJSON
-  .map((item) => {
-    const not_organic = item.organic ? "" : "not-organic";
-    return card
-      .replace("{%IMAGE%}", item.image)
-      .replace("{%IMAGE%}", item.image)
-      .replace("{%PRODUCTNAME%}", item.productName)
-      .replace("{%NOT_ORGANIC%}", not_organic)
-      .replace("{%QUANTITY%}", item.quantity)
-      .replace("{%PRICE%}", item.price)
-      .replace("{%ID%}", item.id);
-  })
+  .map((item) => replaceAllCardData(card, item))
   .join("");
 const finalOverview = overview.replace("{%PRODUCT_CARD%}", productList);
+
 //SERVER
 const server = http.createServer((req, res) => {
   const pathName = req.url;
@@ -47,31 +73,11 @@ const server = http.createServer((req, res) => {
   }
   // product page
   else if (pathName === `/product?id=${id}`) {
-    const not_organic = dataJSON[id].organic ? "" : "not-organic";
-    const finalProduct = product
-      .replace("{%PRODUCTNAME%}", dataJSON[id].productName)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%NOT_ORGANIC%}", not_organic)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%IMAGE%}", dataJSON[id].image)
-      .replace("{%PRODUCTNAME%}", dataJSON[id].productName)
-      .replace("{%FROM%}", dataJSON[id].from)
-      .replace("{%NUTRIENTS%}", dataJSON[id].nutrients)
-      .replace("{%QUANTITY%}", dataJSON[id].quantity)
-      .replace("{%PRICE%}", dataJSON[id].price)
-      .replace("{%PRICE%}", dataJSON[id].price)
-      .replace("{%DESCRIPTION%}", dataJSON[id].description);
+    const eachProduct = replaceAllProductData(product, dataJSON[id]);
     res.writeHead(200, {
       "Content-type": "text/html",
     });
-    res.end(finalProduct);
+    res.end(eachProduct);
   }
   // api page
   else if (pathName === "/api") {
