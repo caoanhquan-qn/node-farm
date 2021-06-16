@@ -1,5 +1,6 @@
 const fs = require("fs");
 const http = require("http");
+const url = require("url");
 
 // READ FILES
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
@@ -39,7 +40,7 @@ const finalOverview = overview.replace("{%PRODUCT_CARD%}", productList);
 //SERVER
 const server = http.createServer((req, res) => {
   const pathName = req.url;
-  const id = pathName[pathName.length - 1];
+  const { query, search } = url.parse(pathName, true);
 
   // overview/ root page
   if (pathName === "/overview" || pathName === "/") {
@@ -49,7 +50,8 @@ const server = http.createServer((req, res) => {
     res.end(finalOverview);
   }
   // product page
-  else if (pathName === `/product?id=${id}`) {
+  else if (pathName === `/product${search}`) {
+    const { id } = query;
     const eachProduct = replaceAllData(product, dataJSON[id]);
     res.writeHead(200, {
       "Content-type": "text/html",
