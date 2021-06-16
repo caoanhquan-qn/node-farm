@@ -18,45 +18,22 @@ const page_not_found = fs.readFileSync(
 );
 
 // replace all card data
-const replaceAllCardData = function (cardHtml, itemObj) {
-  return cardHtml
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%PRODUCTNAME%}", itemObj.productName)
-    .replace("{%NOT_ORGANIC%}", itemObj.organic ? "" : "not-organic")
-    .replace("{%QUANTITY%}", itemObj.quantity)
-    .replace("{%PRICE%}", itemObj.price)
-    .replace("{%ID%}", itemObj.id);
-};
-// replace all product data
-const replaceAllProductData = (productHtml, itemObj) => {
-  return productHtml
-    .replace("{%PRODUCTNAME%}", itemObj.productName)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%NOT_ORGANIC%}", itemObj.organic ? "" : "not-organic")
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%IMAGE%}", itemObj.image)
-    .replace("{%PRODUCTNAME%}", itemObj.productName)
-    .replace("{%FROM%}", itemObj.from)
-    .replace("{%NUTRIENTS%}", itemObj.nutrients)
-    .replace("{%QUANTITY%}", itemObj.quantity)
-    .replace("{%PRICE%}", itemObj.price)
-    .replace("{%PRICE%}", itemObj.price)
-    .replace("{%DESCRIPTION%}", itemObj.description);
+const replaceAllData = function (tempHtml, itemObj) {
+  return tempHtml
+    .replace(/{%IMAGE%}/g, itemObj.image)
+    .replace(/{%PRODUCTNAME%}/g, itemObj.productName)
+    .replace(/{%NOT_ORGANIC%}/g, itemObj.organic ? "" : "not-organic")
+    .replace(/{%FROM%}/g, itemObj.from)
+    .replace(/{%NUTRIENTS%}/g, itemObj.nutrients)
+    .replace(/{%QUANTITY%}/g, itemObj.quantity)
+    .replace(/{%PRICE%}/g, itemObj.price)
+    .replace(/{%ID%}/g, itemObj.id)
+    .replace(/{%DESCRIPTION%}/g, itemObj.description);
 };
 
 // final data
 
-const productList = dataJSON
-  .map((item) => replaceAllCardData(card, item))
-  .join("");
+const productList = dataJSON.map((item) => replaceAllData(card, item)).join("");
 const finalOverview = overview.replace("{%PRODUCT_CARD%}", productList);
 
 //SERVER
@@ -73,7 +50,7 @@ const server = http.createServer((req, res) => {
   }
   // product page
   else if (pathName === `/product?id=${id}`) {
-    const eachProduct = replaceAllProductData(product, dataJSON[id]);
+    const eachProduct = replaceAllData(product, dataJSON[id]);
     res.writeHead(200, {
       "Content-type": "text/html",
     });
