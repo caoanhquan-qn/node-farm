@@ -1,6 +1,8 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 
 // READ FILES
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
@@ -72,6 +74,8 @@ const server = http.createServer((req, res) => {
     res.end(page_not_found);
   }
 });
-server.listen(8000, "127.0.0.1", () => {
+
+const port = process.env.PORT || 8000;
+server.listen(port, "127.0.0.1", () => {
   console.log("Server running on port 8000");
 });
