@@ -76,7 +76,6 @@ const server = http.createServer((req, res) => {
 });
 
 const port = process.env.PORT || 8000;
-const localhost = process.env.LOCAL_HOST || "127.0.0.1";
-server.listen(port, localhost, () => {
+server.listen(port, () => {
   console.log("Server running on port 8000");
 });
